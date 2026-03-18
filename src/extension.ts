@@ -3,7 +3,7 @@
  * Kylin fork of eamodio/vscode-gitlens (v11.7.0 base) with commit chart visualizations.
  */
 'use strict';
-import { commands, ExtensionContext, extensions, window, workspace } from 'vscode';
+import { commands, ExtensionContext, window, workspace } from 'vscode';
 import type { CreatePullRequestActionContext, GitLensApi, OpenPullRequestActionContext } from '../src/api/gitlens';
 import { Api } from './api/api';
 import { Commands, executeCommand, OpenPullRequestOnRemoteCommandArgs, registerCommands } from './commands';
@@ -11,6 +11,7 @@ import { CreatePullRequestOnRemoteCommandArgs } from './commands/createPullReque
 import { configuration, Configuration, TraceLevel } from './configuration';
 import { ContextKeys, GlobalState, GlyphChars, setContext, SyncedState } from './constants';
 import { Container } from './container';
+import Controller from './controllers/mainController';
 import { Git, GitBranch, GitCommit } from './git/git';
 import { GitService } from './git/gitService';
 import { GitUri } from './git/gitUri';
@@ -20,55 +21,25 @@ import { Messages } from './messages';
 import { registerPartnerActionRunners } from './partners';
 import { Strings, Versions } from './system';
 import { ViewNode } from './views/nodes';
-import Controller from './controllers/mainController';
 
 let _context: ExtensionContext | undefined;
 
 export async function activate(context: ExtensionContext): Promise<GitLensApi | undefined> {
-
-	// If both Kylin GitLens and upstream GitLens are installed, do not activate Kylin version
-	if (context.extension.id === 'KylinIDETeam.gitlens') {
-		// Ensure that stable isn't also installed
-		const stable = extensions.getExtension('eamodio.gitlens');
-		if (stable != null) {
-			Logger.log('GitLens Lower Version For Friendly License Was NOT activated because another GitLens is also enabled');
-
-			// If we don't use a setTimeout here this notification will get lost for some reason
-			setTimeout(() => void Messages.showInsidersErrorMessage(), 0);
-
-			return undefined;
-		}
-	}
-
-	if (context.extension.id === 'KylinIDETeam.gitlens') {
-		// Ensure that stable isn't also installed
-		const stable = extensions.getExtension('eamodio.gitlens-insiders');
-		if (stable != null) {
-			Logger.log('GitLens (Insiders) was NOT activated because GitLens is also enabled');
-
-			// If we don't use a setTimeout here this notification will get lost for some reason
-			setTimeout(() => void Messages.showInsidersErrorMessage(), 0);
-
-			return undefined;
-		}
-	}
 	const start = process.hrtime();
 
 	_context = context;
 
 	// Register Kylin-specific commands for commit chart views
 	const controller = new Controller(context);
-	let disposable = commands.registerCommand("kylin.viewCommits",() => {
-	  controller.showCommitsPanel();
-	}
-	);
+	const disposable = commands.registerCommand('kylin.viewCommits', () => {
+		void controller.showCommitsPanel();
+	});
 	context.subscriptions.push(disposable);
 	//
 
-	let disposablesinglefile = commands.registerCommand("kylin.viewfilehistory",() => {
-	  controller.showsinglefileCommitsPanel();
-	}
-	);
+	const disposablesinglefile = commands.registerCommand('kylin.viewfilehistory', () => {
+		void controller.showsinglefileCommitsPanel();
+	});
 	context.subscriptions.push(disposablesinglefile);
 
 
@@ -129,16 +100,8 @@ export async function activate(context: ExtensionContext): Promise<GitLensApi | 
 		);
 	}
 
-	if (previousVersion == null) {
-		const showWelcomeOnInstall = workspace.getConfiguration('gitlens').get<boolean>('showWelcomeOnInstall', false);
-		void context.globalState.update(SyncedState.WelcomeViewVisible, showWelcomeOnInstall);
-		void setContext(ContextKeys.ViewsWelcomeVisible, showWelcomeOnInstall);
-	} else {
-		void setContext(
-			ContextKeys.ViewsWelcomeVisible,
-			context.globalState.get<boolean>(SyncedState.WelcomeViewVisible) ?? false,
-		);
-	}
+	void context.globalState.update(SyncedState.WelcomeViewVisible, true);
+	void setContext(ContextKeys.ViewsWelcomeVisible, true);
 
 	const enabled = workspace.getConfiguration('git', null).get<boolean>('enabled', true);
 	if (!enabled) {
@@ -181,6 +144,7 @@ export async function activate(context: ExtensionContext): Promise<GitLensApi | 
 	registerCommands(context);
 	registerBuiltInActionRunners(context);
 	registerPartnerActionRunners(context);
+	void ensureVisibleViews(context);
 
 	const gitVersion = Git.getGitVersion();
 
@@ -276,6 +240,46 @@ function registerBuiltInActionRunners(context: ExtensionContext): void {
 			},
 		}),
 	);
+}
+
+const startupViewIds = [
+	'gitlens.views.welcome',
+	'gitlens.views.commits',
+	'gitlens.views.repositories',
+	'gitlens.views.fileHistory',
+	'gitlens.views.kylincommitsRelevant',
+	'gitlens.views.lineHistory',
+	'gitlens.views.branches',
+	'gitlens.views.remotes',
+	'gitlens.views.stashes',
+	'gitlens.views.tags',
+	'gitlens.views.contributors',
+	'gitlens.views.searchAndCompare',
+];
+
+async function ensureVisibleViews(context: ExtensionContext) {
+	await context.globalState.update(SyncedState.WelcomeViewVisible, true);
+	await setContext(ContextKeys.ViewsWelcomeVisible, true);
+
+	try {
+		let count = 0;
+		while (count++ < 2) {
+			await commands.executeCommand('vscode.moveViews', {
+				viewIds: startupViewIds,
+				destinationId: 'workbench.view.extension.gitlens',
+			});
+		}
+	} catch {
+		for (const viewId of startupViewIds) {
+			try {
+				await commands.executeCommand(`${viewId}.resetViewLocation`);
+			} catch {}
+		}
+	}
+
+	try {
+		await commands.executeCommand('workbench.view.extension.gitlens');
+	} catch {}
 }
 
 async function showWelcomeOrWhatsNew(context: ExtensionContext, version: string, previousVersion: string | undefined) {

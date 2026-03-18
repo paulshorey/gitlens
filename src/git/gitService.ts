@@ -488,7 +488,7 @@ export class GitService implements Disposable {
 
 	private async updateContext(repositoryTree: TernarySearchTree<string, Repository>) {
 		const hasRepository = repositoryTree.any();
-		await setEnabled(hasRepository);
+		await setEnabled(true);
 
 		// Don't block for the remote context updates (because it can block other downstream requests during initialization)
 		async function updateRemoteContext() {
