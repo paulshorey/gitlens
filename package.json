@@ -3,10 +3,14 @@
 	"name": "gitlens",
 	"displayName": "Gitlens lower version for friendly license",
 	"description": "(Kylin Modified) Supercharge the Git capabilities built into IDE — Visualize code authorship at a glance via Git blame annotations and code lens, seamlessly navigate and explore Git repositories, gain valuable insights via powerful comparison commands, and so much more",
-	"version": "0.1.16",
+	"version": "0.1.19",
 	"author": {
 		"name": "Eric Amodio",
 		"email": "eamodio@gmail.com"
+	},
+	"repository": {
+		"type": "git",
+		"url": "https://github.com/paulshorey/gitlens"
 	},
 	"publisher": "KylinIDETeam",
 	"license": "UNLICENSED",
@@ -274,7 +278,7 @@
 							"Toggles file changes since before the commit",
 							"Toggles file changes from the commit",
 							"Compares the current committed file with the previous commit",
-							"Reveals the commit in the Side Bar",
+							"Reveals the commit in the Panel",
 							"Searches for commits within the range",
 							"Shows a commit details quick pick menu",
 							"Shows a commit file details quick pick menu",
@@ -327,7 +331,7 @@
 							"Toggles file changes since before the commit",
 							"Toggles file changes from the commit",
 							"Compares the current committed file with the previous commit",
-							"Reveals the commit in the Side Bar",
+							"Reveals the commit in the Panel",
 							"Searches for the commit",
 							"Shows a commit details quick pick menu",
 							"Shows a commit file details quick pick menu",
@@ -483,7 +487,7 @@
 							"Toggles Git code lens",
 							"Compares the current line commit with the previous",
 							"Compares the current line commit with the working tree",
-							"Reveals the commit in the Side Bar",
+							"Reveals the commit in the Panel",
 							"Searches for the commit",
 							"Shows a commit details quick pick menu",
 							"Shows a commit file details quick pick menu",
@@ -2004,7 +2008,7 @@
 							"null"
 						],
 						"default": null,
-						"markdownDescription": "Specifies whether to show the commit search results directly in the quick pick menu, in the Side Bar, or will be based on the context",
+						"markdownDescription": "Specifies whether to show the commit search results directly in the quick pick menu, in the Panel, or will be based on the context",
 						"scope": "window",
 						"order": 40
 					},
@@ -3882,12 +3886,12 @@
 			},
 			{
 				"command": "gitlens.revealCommitInView",
-				"title": "%Reveal Commit in Side Bar%",
+				"title": "%Reveal Commit in Panel%",
 				"category": "GitLens"
 			},
 			{
 				"command": "gitlens.showCommitInView",
-				"title": "%Search for Commit in Side Bar%",
+				"title": "%Search for Commit in Panel%",
 				"category": "GitLens"
 			},
 			{
@@ -9917,7 +9921,7 @@
 			}
 		],
 		"viewsContainers": {
-			"activitybar": [
+			"panel": [
 				{
 					"id": "gitlens",
 					"title": "GitLens",

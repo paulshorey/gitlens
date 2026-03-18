@@ -236,7 +236,7 @@ export class StatusBarController implements Disposable {
 				tooltip = 'Click to Open Revision on Remote';
 				break;
 			case StatusBarCommand.RevealCommitInView:
-				tooltip = 'Click to Reveal Commit in the Side Bar';
+				tooltip = 'Click to Reveal Commit in the Panel';
 				break;
 			case StatusBarCommand.ShowCommitsInView:
 				tooltip = 'Click to Search for Commit';

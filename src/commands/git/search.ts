@@ -193,7 +193,7 @@ export class SearchGitCommand extends QuickCommand<State> {
 							  })} for ${state.pattern}`,
 					picked: context.commit?.ref,
 					showInSideBarCommand: new ActionQuickPickItem(
-						'$(link-external)  Show Results in Side Bar',
+						'$(link-external)  Show Results in Panel',
 						() =>
 							void Container.searchAndCompareView.search(
 								repoPath,

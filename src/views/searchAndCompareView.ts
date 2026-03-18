@@ -1,11 +1,15 @@
 'use strict';
 import { commands, ConfigurationChangeEvent, Disposable, TreeItem, TreeItemCollapsibleState } from 'vscode';
-import { getRepoPathOrPrompt } from '../commands';
 import { configuration, SearchAndCompareViewConfig, ViewFilesLayout } from '../configuration';
 import { ContextKeys, NamedRef, PinnedItem, PinnedItems, setContext, WorkspaceState } from '../constants';
 import { Container } from '../container';
 import { GitLog, GitRevision, SearchPattern } from '../git/git';
-import { ReferencePicker, ReferencesQuickPickIncludes } from '../quickpicks';
+import {
+	CommandQuickPickItem,
+	ReferencePicker,
+	ReferencesQuickPickIncludes,
+	RepositoryPicker,
+} from '../quickpicks';
 import { debug, gate, Iterables, log, Promises } from '../system';
 import {
 	CompareResultsNode,
@@ -176,7 +180,12 @@ export class SearchAndCompareViewNode extends ViewNode<SearchAndCompareView> {
 
 	async selectForCompare(repoPath?: string, ref?: string | NamedRef, options?: { prompt?: boolean }) {
 		if (repoPath == null) {
-			repoPath = await getRepoPathOrPrompt('Compare');
+			const pick = await RepositoryPicker.show('Compare');
+			if (pick instanceof CommandQuickPickItem) {
+				void (await pick.execute());
+				return;
+			}
+			repoPath = pick?.repoPath;
 		}
 		if (repoPath == null) return;
 
