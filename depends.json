@@ -1,0 +1,22 @@
+{
+    "deb":{
+        "default_arch":{
+            "default_os":{
+                "git":{
+                },
+                "ssh-askpass":{
+                }
+            }
+        }
+    },
+    "rpm":{
+        "default_arch":{
+            "default_os":{
+                "git":{
+                },
+                "openssh-askpass":{
+                }
+            }
+        }
+    }
+}
