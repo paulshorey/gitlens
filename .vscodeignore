@@ -17,6 +17,8 @@ test/**
 .eslintrc.json
 .gitattributes
 .gitignore
+AGENTS.md
+**/AGENTS.md
 .prettierignore
 .prettierrc
 .yarnrc

@@ -11,7 +11,6 @@ VS Code extension for Git visualization (blame, history, diff). Kylin fork of ea
 | **scripts/** | Empty (build scripts removed) |
 | **images/** | Extension icons, view SVGs, theme assets |
 | **.vscode/** | Launch config, tasks |
-| **test/** | Extension tests |
 | **package.json** | Extension manifest, commands, activation events |
 | **webpack.config.js** | Bundles extension + webviews with CSP |
 

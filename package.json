@@ -19,14 +19,11 @@
 		"Other"
 	],
 	"keywords": [
-		"KylinIdeDev",
-		"KylinIdeDevSourceControlManage",
 		"gitlens",
 		"git",
 		"blame",
 		"log",
-		"annotation",
-		"multi-root ready"
+		"annotation"
 	],
 	"activationEvents": [
 		"onCustomEditor:gitlens.rebase",
@@ -10051,8 +10048,6 @@
 		}
 	},
 	"scripts": {
-		"analyze:bundle": "webpack --env analyzeBundle",
-		"analyze:deps": "webpack --env analyzeDeps",
 		"build": "webpack --mode development",
 		"build:extension": "webpack --mode development --config-name extension",
 		"build:webviews": "webpack --mode development --config-name webviews",
@@ -10061,14 +10056,11 @@
 		"lint": "eslint src/**/*.ts --fix",
 		"pack": "vsce package --yarn",
 		"pretty": "prettier --config .prettierrc --loglevel warn --write .",
-		"pub": "vsce publish --yarn",
 		"rebuild": "yarn run reset && yarn run build",
 		"reset": "yarn run clean && yarn --frozen-lockfile",
 		"watch": "webpack --watch --mode development",
 		"watch:extension": "webpack --watch --mode development --config-name extension",
 		"watch:webviews": "webpack --watch --mode development --config-name webviews",
-		"update-dts": "pushd \"src/@types\" && npx vscode-dts dev && popd",
-		"update-dts:master": "pushd \"src/@types\" && npx vscode-dts master && popd",
 		"vscode:prepublish": "yarn run bundle"
 	},
 	"dependencies": {
@@ -10089,7 +10081,6 @@
 		"@types/vscode": "1.62.0",
 		"@typescript-eslint/eslint-plugin": "5.4.0",
 		"@typescript-eslint/parser": "5.4.0",
-		"@types/mocha": "^2.2.42",
 		"@types/fs-extra": "^9.0.11",
 		"tslint": "^5.12.1",
 		"ansi-regex": "6.0.1",
